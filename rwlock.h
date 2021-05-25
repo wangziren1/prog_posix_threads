@@ -34,7 +34,7 @@ typedef struct rwlock_tag {
  */
 #define RWL_INITIALIZER \
     {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, \
-    PTHREAD_COND_INITIALIZER, RWLOCK_VALID, 0, 0, 0, 0}
+    PTHREAD_COND_INITIALIZER, RWLO  CK_VALID, 0, 0, 0, 0}
 
 /*
  * Define read-write lock functions

@@ -11,13 +11,59 @@ find_package(Threads REQUIRED)
 
 set(RT_LIB rt)
 
+add_definitions(-DDEBUG)
+
+# build alarm
+add_executable(alarm alarm.c)
+target_link_libraries(alarm ${CMAKE_THREAD_LIBS_INIT})
+
+# build alarm_thread
+add_executable(alarm_thread alarm_mutex.c)
+target_link_libraries(alarm_thread ${CMAKE_THREAD_LIBS_INIT})
+
+# build lifecycle
+add_executable(lifecycle lifecycle.c)
+target_link_libraries(lifecycle ${CMAKE_THREAD_LIBS_INIT})
+
 # build alarm_mutex
 add_executable(alarm_mutex alarm_mutex.c)
 target_link_libraries(alarm_mutex ${CMAKE_THREAD_LIBS_INIT})
 
+# build trylock
+add_executable(trylock trylock.c)
+target_link_libraries(trylock ${CMAKE_THREAD_LIBS_INIT})
+
 # build backoff
 add_executable(backoff backoff.c)
 target_link_libraries(backoff ${CMAKE_THREAD_LIBS_INIT})
+
+# build cond
+add_executable(cond cond.c)
+target_link_libraries(cond ${CMAKE_THREAD_LIBS_INIT})
+
+# build pipe
+add_executable(pipe pipe.c)
+target_link_libraries(pipe ${CMAKE_THREAD_LIBS_INIT})
+
+# build crew
+add_executable(crew crew.c)
+target_link_libraries(crew ${CMAKE_THREAD_LIBS_INIT})
+
+# build server
+add_executable(server server.c)
+target_link_libraries(server ${CMAKE_THREAD_LIBS_INIT})
+
+# build once
+add_executable(once once.c)
+target_link_libraries(once ${CMAKE_THREAD_LIBS_INIT})
+
+# build thread_attr
+add_executable(thread_attr thread_attr.c)
+target_link_libraries(thread_attr ${CMAKE_THREAD_LIBS_INIT})
+
+# build cancel
+add_executable(cancel cancel.c)
+target_link_libraries(cancel ${CMAKE_THREAD_LIBS_INIT})
 
 # build sched_attr
 add_executable(sched_attr sched_attr.c)

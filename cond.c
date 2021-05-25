@@ -76,6 +76,7 @@ int main (int argc, char *argv[])
         err_abort (status, "Lock mutex");
 
     while (data.value == 0) {
+        printf("Before signal, predicate is %d\n", data.value);
         status = pthread_cond_timedwait (
             &data.cond, &data.mutex, &timeout);
         if (status == ETIMEDOUT) {

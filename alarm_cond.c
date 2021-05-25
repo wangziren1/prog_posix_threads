@@ -118,7 +118,7 @@ void *alarm_thread (void *arg)
             status = pthread_cond_wait (&alarm_cond, &alarm_mutex);
             if (status != 0)
                 err_abort (status, "Wait on cond");
-            }
+        }
         alarm = alarm_list;
         alarm_list = alarm->link;
         now = time (NULL);

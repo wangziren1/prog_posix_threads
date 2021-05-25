@@ -64,11 +64,14 @@ void engine_routine (void *arg)
     } else
         engine->calls++;
     result = 1;
-    printf (
-        "Engine: computing %d^%d\n",
-        power->value, power->power);
+    // printf (
+    //     "Engine: computing %d^%d\n",
+    //     power->value, power->power);
     for (count = 1; count <= power->power; count++)
         result *= power->value;
+    printf (
+        "Engine: computing %d^%d = %d\n",
+        power->value, power->power, result);
     free (arg);
 }
 
@@ -115,6 +118,15 @@ int main (int argc, char *argv[])
     status = workq_init (&workq, 4, engine_routine);
     if (status != 0)
         err_abort (status, "Init work queue");
+    status = pthread_create (&thread_id, NULL, thread_routine, NULL);
+    if (status != 0)
+        err_abort (status, "Create thread");
+    status = pthread_create (&thread_id, NULL, thread_routine, NULL);
+    if (status != 0)
+        err_abort (status, "Create thread");
+    status = pthread_create (&thread_id, NULL, thread_routine, NULL);
+    if (status != 0)
+        err_abort (status, "Create thread");
     status = pthread_create (&thread_id, NULL, thread_routine, NULL);
     if (status != 0)
         err_abort (status, "Create thread");

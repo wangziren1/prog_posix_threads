@@ -15,7 +15,7 @@ void *thread_routine (void *arg)
     return arg;
 }
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
     pthread_t thread_id;
     void *thread_result;
@@ -30,7 +30,7 @@ main (int argc, char *argv[])
     if (status != 0)
         err_abort (status, "Join thread");
     if (thread_result == NULL)
-        return 0;
+        return 0;   
     else
         return 1;
 }

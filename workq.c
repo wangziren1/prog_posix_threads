@@ -43,26 +43,28 @@ static void *workq_server (void *arg)
      * server threads to terminate before destroying a work
      * queue.
      */
-    DPRINTF (("A worker is starting\n"));
+    DPRINTF (("Thread %lu: A worker is starting\n", pthread_self()));
     status = pthread_mutex_lock (&wq->mutex);
     if (status != 0)
         return NULL;
 
     while (1) {
         timedout = 0;
-        DPRINTF (("Worker waiting for work\n"));
+        DPRINTF (("Thread %lu: Worker waiting for work\n", pthread_self()));
         clock_gettime (CLOCK_REALTIME, &timeout);
-        timeout.tv_sec += 2;
+        timeout.tv_sec += 5;
 
         while (wq->first == NULL && !wq->quit) {
             /*
              * Server threads time out after spending 2 seconds
              * waiting for new work, and exit.
              */
+            wq->idle++;
             status = pthread_cond_timedwait (
                     &wq->cv, &wq->mutex, &timeout);
+            wq->idle--;
             if (status == ETIMEDOUT) {
-                DPRINTF (("Worker wait timed out\n"));
+                DPRINTF (("Thread %lu: Worker wait timed out\n", pthread_self()));
                 timedout = 1;
                 break;
             } else if (status != 0) {
@@ -88,8 +90,8 @@ static void *workq_server (void *arg)
                 return NULL;
             }
         }
-        DPRINTF (("Work queue: 0x%p, quit: %d\n",
-		  wq->first, wq->quit));
+        DPRINTF (("Thread %lu: Work queue: 0x%p, quit: %d\n",
+		          pthread_self(), wq->first, wq->quit));
         we = wq->first;
 
         if (we != NULL) {
@@ -99,7 +101,7 @@ static void *workq_server (void *arg)
             status = pthread_mutex_unlock (&wq->mutex);
             if (status != 0)
                 return NULL;
-            DPRINTF (("Worker calling engine\n"));
+            DPRINTF (("Thread %lu: Worker calling engine\n", pthread_self()));
             wq->engine (we->data);
             free (we);
             status = pthread_mutex_lock (&wq->mutex);
@@ -112,7 +114,7 @@ static void *workq_server (void *arg)
          * have been asked to quit, then shut down.
          */
         if (wq->first == NULL && wq->quit) {
-            DPRINTF (("Worker shutting down\n"));
+            DPRINTF (("Thread %lu: Worker shutting down\n", pthread_self()));
             wq->counter--;
 
             /*
@@ -136,14 +138,15 @@ static void *workq_server (void *arg)
          * we're allowed, then terminate this server thread.
          */
         if (wq->first == NULL && timedout) {
-            DPRINTF (("engine terminating due to timeout.\n"));
+            DPRINTF (("Thread %lu: engine terminating due to timeout.\n", 
+                      pthread_self()));
             wq->counter--;
             break;
         }
     }
 
     pthread_mutex_unlock (&wq->mutex);
-    DPRINTF (("Worker exiting\n"));
+    DPRINTF (("Thread %lu: Worker exiting\n", pthread_self()));
     return NULL;
 }
 
